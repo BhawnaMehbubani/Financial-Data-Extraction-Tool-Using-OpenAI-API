@@ -50,20 +50,65 @@ Below is the architecture of the Financial Data Extraction Tool:
 Client (Browser)
   |
   |---> Frontend (HTML, CSS, JavaScript)
-        |---> File Upload
-        |---> Results Visualization
+        |
+        |---> File Upload Module
+        |       |---> Accepts user uploads in various formats (PDF, text, image)
+        |       |---> Validates file types and sizes before submission
+        |
+        |---> Results Visualization Module
+        |       |---> Displays extracted data in an intuitive table or card layout
+        |       |---> Includes a download option for structured results (JSON/CSV)
+        |
+        |---> User Interaction Components
+                |---> Progress Indicators (e.g., upload status, extraction status)
+                |---> Error Notifications (e.g., invalid file type, extraction errors)
   |
   |---> Backend (Flask API)
-        |---> File Handling
-        |---> Extraction Pipeline
-              |---> Document Parser (PyPDF2, PDFplumber)
-              |---> OpenAI API Integration
-              |---> Data Post-Processing
-        |---> Results Formatting (JSON, CSV)
+        |
+        |---> File Handling Layer
+        |       |---> Manages secure upload and temporary storage of files
+        |       |---> Handles file conversion for non-text formats (e.g., image-to-text via OCR)
+        |
+        |---> Data Extraction Pipeline
+        |       |
+        |       |---> Document Parser
+        |       |       |---> Extracts raw text using PyPDF2, PDFplumber, or OCR
+        |       |       |---> Handles multi-page documents and complex layouts
+        |       |
+        |       |---> OpenAI API Integration
+        |       |       |---> Sends parsed text to OpenAI LLM for semantic understanding
+        |       |       |---> Extracts context-aware financial fields (e.g., totals, dates, accounts)
+        |       |
+        |       |---> Post-Processing and Validation
+        |               |---> Cleans and standardizes extracted data (e.g., format validation for dates)
+        |               |---> Ensures mandatory fields are populated (e.g., invoice number, total amount)
+        |               |---> Handles edge cases like missing or ambiguous data
+        |
+        |---> Results Formatting Layer
+        |       |---> Organizes data into structured formats (JSON, CSV)
+        |       |---> Prepares the response for client consumption
+        |
+        |---> Logging and Monitoring
+                |---> Tracks API requests and responses for debugging and audit trails
+                |---> Logs errors and warnings for proactive issue resolution
   |
-  |---> Storage
+  |---> Storage (Temporary and Persistent)
+        |
         |---> Uploaded Documents
-        |---> Extracted Data (Temporary Storage)
+        |       |---> Temporarily stores user-uploaded files for processing
+        |
+        |---> Extracted Data
+        |       |---> Stores processed data temporarily for user download
+        |       |---> Archives data for audit or compliance purposes (if enabled)
+  |
+  |---> Results Delivery Layer
+        |
+        |---> API Response
+        |       |---> Returns extracted data as a JSON payload for API integrations
+        |
+        |---> Download Module
+                |---> Provides links to download results in JSON or CSV formats
+
 ```
 
 
